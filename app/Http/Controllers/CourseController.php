@@ -29,7 +29,22 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'instructor' => 'required|string|max:255',
+            'coursehead' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Handle image upload if provided
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imagePath = $image->store('course_images', 'public');
+            $validatedData['image'] = $imagePath;
+        }
+
+        Course::create($validatedData);
+        return redirect()->route("Course.index");
     }
 
     /**
