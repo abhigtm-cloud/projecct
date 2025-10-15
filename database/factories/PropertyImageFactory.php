@@ -35,15 +35,12 @@ class PropertyImageFactory extends Factory
         $width = 800;
         $height = 600;
         
-        // Generate Unsplash URL for property images
-        $imageUrl = "https://source.unsplash.com/{$width}x{$height}/?{$category}";
-        
-        // For demonstration, we'll use placeholder paths that would be created during seeding
-        $filename = 'property_' . fake()->uuid() . '.jpg';
+        // Generate placeholder URL for property images
+        $imageUrl = "https://picsum.photos/{$width}/{$height}?random=" . fake()->numberBetween(1, 1000);
         
         return [
             'property_id' => Property::factory(),
-            'image_path' => 'properties/' . $filename,
+            'image_path' => $imageUrl,
             'alt_text' => fake()->sentence(3),
             'is_primary' => false, // Will be set to true for one image per property in seeder
             'sort_order' => fake()->numberBetween(1, 10),

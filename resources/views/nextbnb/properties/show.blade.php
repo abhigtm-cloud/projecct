@@ -113,7 +113,7 @@
                         </div>
                     </div>
 
-                    @if($property->amenities && in_array('self_check_in', $property->amenities))
+                    @if(is_array($property->amenities) && in_array('self_check_in', $property->amenities))
                     <div class="highlight-item">
                         <div class="highlight-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24">
@@ -147,12 +147,12 @@
             </div>
 
             <!-- Amenities -->
-            @if($property->amenities)
+            @if($property->amenities && is_array($property->amenities))
             <div class="amenities-section">
                 <h2>What this place offers</h2>
                 <div class="amenities-list">
                     @php
-                        $amenities = $property->amenities ?: [];
+                        $amenities = is_array($property->amenities) ? $property->amenities : [];
                         $amenityLabels = [
                             'wifi' => 'Wi-Fi',
                             'tv' => 'TV',

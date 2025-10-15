@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @extends('nextbnb.layouts.app')
 
 @section('title', 'Host Dashboard - NextBNB')
@@ -161,7 +165,7 @@
                                 <!-- Property Image -->
                                 <div class="aspect-w-16 aspect-h-10 bg-gray-200">
                                     @if($property->images->count() > 0)
-                                        <img src="{{ Storage::url($property->images->first()->path) }}" 
+                                        <img src="{{ Storage::url($property->images->first()->image_path) }}" 
                                              alt="{{ $property->title }}"
                                              class="w-full h-32 object-cover">
                                     @else
@@ -205,10 +209,16 @@
                                            class="flex-1 px-2 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium rounded text-center transition-colors">
                                             View
                                         </a>
-                                        <a href="{{ route('properties.edit', $property) }}" 
-                                           class="flex-1 px-2 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded text-center transition-colors">
-                                            Edit
-                                        </a>
+                                        @can('update', $property)
+                                            <a href="{{ route('properties.edit', $property) }}" 
+                                               class="flex-1 px-2 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded text-center transition-colors">
+                                                Edit
+                                            </a>
+                                        @else
+                                            <span class="flex-1 px-2 py-1 bg-gray-400 text-gray-200 text-xs font-medium rounded text-center cursor-not-allowed">
+                                                Edit
+                                            </span>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>

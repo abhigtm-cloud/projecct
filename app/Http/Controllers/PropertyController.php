@@ -294,7 +294,10 @@ class PropertyController extends Controller
     public function hostDashboard()
     {
         $user = Auth::user();
-        $properties = $user->properties()->withCount('bookings', 'reviews')->get();
+        $properties = $user->properties()
+            ->withCount('bookings', 'reviews')
+            ->with('images')
+            ->get();
         $totalEarnings = $user->totalEarnings();
         $activeBookings = $user->properties()
             ->with('bookings')

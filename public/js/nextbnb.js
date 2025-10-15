@@ -2,19 +2,91 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // User Menu Dropdown
-    const userMenuBtn = document.querySelector('.user-menu-btn');
-    const userDropdown = document.querySelector('.user-dropdown');
+    // Smooth Image Loading
+    const propertyImages = document.querySelectorAll('.property-img');
     
-    if (userMenuBtn && userDropdown) {
-        userMenuBtn.addEventListener('click', function(e) {
+    propertyImages.forEach(img => {
+        // Set initial state
+        img.classList.remove('loaded');
+        
+        // Create a new image to preload
+        const imageLoader = new Image();
+        
+        imageLoader.onload = function() {
+            // Once loaded, update the src and add loaded class
+            img.src = this.src;
+            img.classList.add('loaded');
+        };
+        
+        imageLoader.onerror = function() {
+            // If image fails to load, show placeholder
+            img.style.display = 'none';
+            const placeholder = img.parentElement.querySelector('.property-placeholder');
+            if (!placeholder) {
+                const placeholderDiv = document.createElement('div');
+                placeholderDiv.className = 'property-placeholder';
+                placeholderDiv.innerHTML = '<span>Image unavailable</span>';
+                img.parentElement.appendChild(placeholderDiv);
+            }
+        };
+        
+        // Start loading
+        imageLoader.src = img.src;
+    });
+    
+    // Modern User Menu Dropdown
+    const userMenuTrigger = document.querySelector('.user-menu-trigger');
+    const userDropdownMenu = document.querySelector('.user-dropdown-menu');
+    let dropdownTimeout;
+    
+    if (userMenuTrigger && userDropdownMenu) {
+        // Show dropdown on hover
+        userMenuTrigger.addEventListener('mouseenter', function() {
+            clearTimeout(dropdownTimeout);
+            userDropdownMenu.style.opacity = '1';
+            userDropdownMenu.style.visibility = 'visible';
+            userDropdownMenu.style.transform = 'translateY(0)';
+        });
+        
+        // Keep dropdown open when hovering over it
+        userDropdownMenu.addEventListener('mouseenter', function() {
+            clearTimeout(dropdownTimeout);
+        });
+        
+        // Hide dropdown when leaving both trigger and menu
+        [userMenuTrigger, userDropdownMenu].forEach(element => {
+            element.addEventListener('mouseleave', function() {
+                dropdownTimeout = setTimeout(() => {
+                    userDropdownMenu.style.opacity = '0';
+                    userDropdownMenu.style.visibility = 'hidden';
+                    userDropdownMenu.style.transform = 'translateY(-10px)';
+                }, 200);
+            });
+        });
+        
+        // Also handle click for mobile
+        userMenuTrigger.addEventListener('click', function(e) {
             e.stopPropagation();
-            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+            const isVisible = userDropdownMenu.style.opacity === '1';
+            
+            if (isVisible) {
+                userDropdownMenu.style.opacity = '0';
+                userDropdownMenu.style.visibility = 'hidden';
+                userDropdownMenu.style.transform = 'translateY(-10px)';
+            } else {
+                userDropdownMenu.style.opacity = '1';
+                userDropdownMenu.style.visibility = 'visible';
+                userDropdownMenu.style.transform = 'translateY(0)';
+            }
         });
         
         // Close dropdown when clicking outside
-        document.addEventListener('click', function() {
-            userDropdown.style.display = 'none';
+        document.addEventListener('click', function(e) {
+            if (!userMenuTrigger.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                userDropdownMenu.style.opacity = '0';
+                userDropdownMenu.style.visibility = 'hidden';
+                userDropdownMenu.style.transform = 'translateY(-10px)';
+            }
         });
     }
     
@@ -197,19 +269,67 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Search functionality
-    const searchBtn = document.querySelector('.search-btn');
-    if (searchBtn) {
-        searchBtn.addEventListener('click', function() {
-            // Collect search parameters
-            const where = document.querySelector('.search-input[placeholder*="destinations"]').value;
-            const checkin = document.querySelector('.search-input[placeholder*="Add dates"]').value;
-            const guests = document.querySelector('.search-input[placeholder*="guests"]').value;
+    // Modern Navbar Scroll Effects
+    let lastScrollTop = 0;
+    const modernHeader = document.querySelector('.modern-header');
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Add shadow effect when scrolling
+        if (scrollTop > 10) {
+            modernHeader.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08)';
+            modernHeader.style.background = 'rgba(255, 255, 255, 0.98)';
+        } else {
+            modernHeader.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1)';
+            modernHeader.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)';
+        }
+        
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+
+    // Mobile Menu Toggle
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+    const navCenter = document.querySelector('.nav-center');
+    
+    if (mobileMenuToggle && navCenter) {
+        mobileMenuToggle.addEventListener('click', function() {
+            const isVisible = navCenter.style.display === 'flex';
             
-            console.log('Search:', { where, checkin, guests });
-            // In a real app, this would trigger search
+            if (isVisible) {
+                navCenter.style.display = 'none';
+                mobileMenuToggle.classList.remove('active');
+            } else {
+                navCenter.style.display = 'flex';
+                navCenter.style.position = 'absolute';
+                navCenter.style.top = '100%';
+                navCenter.style.left = '0';
+                navCenter.style.right = '0';
+                navCenter.style.background = 'white';
+                navCenter.style.padding = '20px';
+                navCenter.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+                navCenter.style.borderRadius = '0 0 20px 20px';
+                mobileMenuToggle.classList.add('active');
+            }
         });
     }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Search functionality - Form will submit naturally
+    // No need to intercept the click event
     
     // Date picker simulation (you'd integrate with a real date picker)
     const dateInputs = document.querySelectorAll('.search-input[placeholder*="dates"]');
@@ -247,25 +367,14 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScrollY = currentScrollY;
     });
     
-    // Lazy loading for images
+    // Property image error handling
     const images = document.querySelectorAll('.property-img');
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.style.opacity = '0';
-                img.style.transition = 'opacity 0.3s ease';
-                
-                img.onload = function() {
-                    this.style.opacity = '1';
-                };
-                
-                observer.unobserve(img);
-            }
+    
+    images.forEach(img => {
+        img.addEventListener('error', function() {
+            this.src = 'https://via.placeholder.com/400x300/f7f7f7/999999?text=No+Image';
         });
     });
-    
-    images.forEach(img => imageObserver.observe(img));
     
     // Keyboard accessibility
     document.addEventListener('keydown', function(e) {

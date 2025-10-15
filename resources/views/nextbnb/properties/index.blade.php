@@ -113,7 +113,7 @@
                             <!-- Property Image -->
                             <div class="relative aspect-w-16 aspect-h-12">
                                 @if($property->images->count() > 0)
-                                    <img src="{{ Storage::url($property->images->first()->path) }}" 
+                                    <img src="{{ Storage::url($property->images->first()->image_path) }}" 
                                          alt="{{ $property->title }}"
                                          class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                                 @else
