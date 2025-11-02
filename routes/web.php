@@ -5,6 +5,7 @@ use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -28,6 +29,11 @@ Route::middleware('auth')->group(function () {
 // Property routes
 Route::resource('properties', PropertyController::class);
 Route::get('/properties/{property}/availability', [PropertyController::class, 'checkAvailability'])->name('properties.availability');
+
+// Payment / checkout (dummy) routes
+Route::get('/properties/{property}/checkout', [PaymentController::class, 'options'])->name('payments.options');
+Route::post('/payments/cash', [PaymentController::class, 'cash'])->name('payments.cash');
+Route::get('/payments/success', [PaymentController::class, 'success'])->name('payments.success');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {

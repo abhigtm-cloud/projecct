@@ -279,6 +279,9 @@
                 </button>
             </form>
 
+            {{-- Quick buy / payment button (dummy checkout) --}}
+            <a href="{{ route('payments.options', $property) }}" class="btn-primary" style="display:inline-block;margin-top:12px;">Proceed to payment / Buy</a>
+
             <p class="booking-note">You won't be charged yet</p>
         </div>
     </div>
